@@ -1,0 +1,10 @@
+# Tahoe-100M ver2 dataset config for State model
+[datasets]
+tahoe = "/home/dataset-assist-0/cuimenglong/workspace/data/tahoe/ver2/train.h5ad"
+
+[training]
+tahoe = "train"
+
+[zeroshot]
+
+[fewshot]
