@@ -2,7 +2,7 @@
 
 Best model from trial#11: CrossPert with **hidden-state difference dual learning**, exported as a standalone package (no external STATE dependency).
 
-# **Caution: this readme is NOT up to date. Browse ALL results files and compare to get the actual metrics comparison!!!**
+# **Caution: this readme is NOT up to date. Browse ALL results files and compare to get the actual metrics comparison!!! DO NOT USE ANY EVAL RESULTS FROM THIS README FOR NOW!!!**
 
 ## Architecture
 
