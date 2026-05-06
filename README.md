@@ -53,9 +53,10 @@ DualCross1.0/
 │   ├── evaluate_tahoe.py    # Tahoe evaluation script (with R2)
 │   ├── model.py             # CrossPertModel with DualPerturbationClassifier
 │   ├── plot_eval_results.py
+│   ├── run_opt_D.sh         # Train with best model params (dualcross)
+│   ├── run_train.sh         # Generic training script
 │   ├── run_eval.sh          # Single checkpoint evaluation
-│   ├── run_all_eval.sh      # Batch evaluation + plots
-│   ├── run_opt_D.sh         # Training script (same params as best model)
+│   ├── run_all_eval.sh      # Batch evaluate all checkpoints + plots
 │   ├── state/               # Vendored STATE package
 │   └── train.py             # Training script with dual learning args
 ├── configs/

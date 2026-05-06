@@ -1,20 +1,36 @@
 #!/bin/bash
 # Opt D: hidden-diff classifier + no cycle + larger model (384-dim)
-# Hypothesis: Larger model capacity + hidden-diff dual + no cycle gives the
-# model more room to learn both primary and dual tasks without interference.
+set -euo pipefail
+
+# Defaults
+SEED=789
+GPU=0
+
+# Parse optional args
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        --seed=*) SEED="${1#*=}" ;;
+        --gpu=*)  GPU="${1#*=}" ;;
+        *) echo "Unknown option: $1"; echo "Usage: $0 [--seed=N] [--gpu=N]"; exit 1 ;;
+    esac
+    shift
+done
+
 VENV="/home/dataset-assist-0/cuimenglong/workspace/code/state/state-main/.venv/bin"
 export PATH="$VENV:$PATH"
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 BASE_DIR="$(dirname "$SCRIPT_DIR")"
 export PYTHONPATH="$SCRIPT_DIR:$PYTHONPATH"
-export CUDA_VISIBLE_DEVICES=3
+export CUDA_VISIBLE_DEVICES="$GPU"
+
+echo "Starting dualcross training — seed=$SEED gpu=$GPU"
 
 "$VENV/python" "$SCRIPT_DIR/train.py" \
   --toml "$BASE_DIR/configs/tahoe_ver2.toml" \
   --output-dir "$BASE_DIR/checkpoints" \
   --charts-dir "$BASE_DIR/charts" \
-  --name "opt_D_hidden384_nocycle" \
+  --name "dualcross" \
   --embed-key X_hvg \
   --pert-col drugname_drugconc \
   --cell-type-key cell_name \
@@ -34,5 +50,5 @@ export CUDA_VISIBLE_DEVICES=3
   --dual-loss-weight 0.1 \
   --cycle-loss-weight 0.0 \
   --dual-on-hidden \
-  --seed 789 \
+  --seed "$SEED" \
   --overwrite
