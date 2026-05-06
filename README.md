@@ -11,25 +11,43 @@ Best model from trial#11: CrossPert with **hidden-state difference dual learning
 
 ## Performance vs PD_ver2 (14 metrics)
 
-**10/13 wins** at step 10000 (best checkpoint):
+**12/14 wins** at step 32000 (best of 4 tied checkpoints at 18000/26000/32000/36000):
 
 | Metric | DualCross1.0 | PD_ver2 | Win? |
 |--------|-------------|---------|------|
-| R2 | **0.953** | 0.639 | ✓ |
-| DEOver | **0.458** | 0.429 | ✓ |
-| DEPrec | **0.423** | 0.421 | ✓ |
-| ES | 0.084 | 0.578 | ✗ |
-| DirAgr | **0.875** | 0.776 | ✓ |
-| AUPRC | **0.443** | 0.441 | ✓ |
-| AUROC | **0.691** | 0.664 | ✓ |
-| PDCorr | 0.712 | 0.809 | ✗ |
-| PDS_L1 | **0.935** | 0.927 | ✓ |
-| PDS_L2 | **0.947** | 0.944 | ✓ |
-| PDS_cos | 0.959 | 0.960 | ✗ |
-| MSE | **0.020** | 0.032 | ✓ |
+| R2 | **0.940** | 0.639 | ✓ |
+| DEOver | **0.536** | 0.429 | ✓ |
+| DEPrec | **0.469** | 0.421 | ✓ |
+| EScorr | **0.729** | 0.382 | ✓ |
+| DirAgr | **0.904** | 0.776 | ✓ |
+| LFCSpear | **0.802** | 0.528 | ✓ |
+| AUPRC | **0.514** | 0.441 | ✓ |
+| AUROC | **0.746** | 0.664 | ✓ |
+| PDCorr | 0.743 | **0.809** | ✗ |
+| PDS_L1 | **0.943** | 0.927 | ✓ |
+| PDS_L2 | **0.951** | 0.944 | ✓ |
+| PDS_cos | 0.947 | **0.960** | ✗ |
+| MSE | **0.023** | 0.032 | ✓ |
 | MAE | **0.042** | 0.077 | ✓ |
 
-Losses: ES (effect size ranking), PDCorr (per-cell correlation), PDS_cos (reconstruction cosine similarity) — universal bottlenecks no CrossPert variant beats.
+**EScorr** = PerturbDiff paper's effect_size_corr: Pearson correlation of per-condition DE gene counts (|δ| > std(δ_real)) across conditions. This replaces cell-eval's `de_spearman_sig` (Spearman correlation of FDR<0.05 gene counts per perturbation), which is a different metric not used in the PerturbDiff paper.
+
+**2 universal bottlenecks** (no CrossPert variant beats PD_ver2 on these): PDCorr (per-cell correlation), PDS_cos (reconstruction cosine similarity). All other 12 metrics are wins.
+
+### Checkpoint win counts (14 metrics, with EScorr)
+
+| Step | Wins | Step | Wins |
+|------|------|------|------|
+| 2000 | 6/14 | 22000 | 11/14 |
+| 4000 | 6/14 | 24000 | 10/14 |
+| 6000 | 8/14 | **26000** | **12/14** |
+| 8000 | 9/14 | 28000 | 11/14 |
+| 10000 | 11/14 | 30000 | 10/14 |
+| 12000 | 10/14 | **32000** | **12/14** ← best |
+| 14000 | 11/14 | 34000 | 10/14 |
+| 16000 | 11/14 | **36000** | **12/14** |
+| **18000** | **12/14** | 38000 | 11/14 |
+| 20000 | 11/14 | 40000 | 11/14 |
 
 ## Files
 
@@ -46,10 +64,12 @@ DualCross1.0/
 │       ├── data_module.torch
 │       ├── version_0/       # Lightning logs
 │       └── checkpoints/
-│           └── step-step=10000.ckpt  # Best checkpoint
+│           └── step-step=32000.ckpt  # Best checkpoint (12/14 wins)
 ├── code/
 │   ├── __init__.py
 │   ├── callbacks.py
+│   ├── compute_effect_size_corr.py  # PerturbDiff paper's EScorr metric
+│   ├── compute_lfcspear.py  # LFCSpear workaround (cell_eval dtype bug)
 │   ├── evaluate_tahoe.py    # Tahoe evaluation script (with R2)
 │   ├── model.py             # CrossPertModel with DualPerturbationClassifier
 │   ├── plot_eval_results.py

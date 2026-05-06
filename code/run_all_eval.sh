@@ -57,6 +57,8 @@ for ckpt in "${CKPTS[@]}"; do
     if [ -f "$results_file" ]; then
         # Patch LFCSpear (cell_eval dtype bug workaround)
         python "$SCRIPT_DIR/compute_lfcspear.py" --eval-dir "$eval_dir" 2>&1
+        # Compute PerturbDiff paper's effect_size_corr
+        python "$SCRIPT_DIR/compute_effect_size_corr.py" --eval-dir "$eval_dir" --patch 2>&1
         echo "  Done → $results_file"
     else
         echo "  WARNING: no results file for $ckpt_name"

@@ -17,7 +17,7 @@ def parse_step(name: str) -> tuple:
         return (float("inf") - 1, "last")
     if name == "final":
         return (float("inf") - 2, "final")
-    m = re.match(r"step-(\d+)", name)
+    m = re.match(r"step-step=(\d+)", name)
     if m:
         return (int(m.group(1)), name)
     return (0, name)
@@ -30,8 +30,11 @@ def main():
         sys.exit(1)
 
     results = {}
+    skip = {"best-train", "final", "last"}
     checkpoints = []
     for entry in sorted(os.listdir(eval_root)):
+        if entry in skip:
+            continue
         rfile = os.path.join(eval_root, entry, "eval_results.json")
         if not os.path.isfile(rfile):
             continue

@@ -13,3 +13,7 @@ OUTDIR="${2:-$BASE_DIR/results/single}"
 python "$SCRIPT_DIR/evaluate_tahoe.py" \
   --ckpt "$CKPT" \
   --output-dir "$OUTDIR"
+
+# Patch metrics that cell_eval can't compute correctly
+python "$SCRIPT_DIR/compute_lfcspear.py" --eval-dir "$OUTDIR" 2>&1
+python "$SCRIPT_DIR/compute_effect_size_corr.py" --eval-dir "$OUTDIR" --patch 2>&1
